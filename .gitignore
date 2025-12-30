@@ -1,0 +1,5 @@
+﻿node_modules/
+.netlify/
+__pycache__/
+*.pptx
+*.zip

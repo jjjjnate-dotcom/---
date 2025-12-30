@@ -1,0 +1,11 @@
+{
+  "name": "notice-gen-netlify",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "netlify dev"
+  },
+  "dependencies": {
+    "pptxgenjs": "^3.12.0"
+  }
+}

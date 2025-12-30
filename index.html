@@ -1,0 +1,1041 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>안내문 작성</title>
+  <style>
+    :root {
+      --blue: #1e73c8;
+      --dark: #0c4a99;
+      --bg: #f5f7fb;
+      --border: #d4dce8;
+      --light: #f5f8fd;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px;
+      background: var(--bg);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+      color: #222;
+    }
+    .card {
+      max-width: 640px;
+      margin: 0 auto 14px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px 20px 16px;
+      box-shadow: 0 12px 35px rgba(0,0,0,0.06);
+    }
+    h1 {
+      margin: 0 0 14px;
+      font-size: 20px;
+      color: var(--dark);
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 6px;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(30,115,200,0.12);
+    }
+    .field { margin-bottom: 12px; }
+    .help {
+      font-size: 12px;
+      color: #666;
+      margin-top: 4px;
+    }
+    .hidden { display: none; }
+    .section-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #334;
+      margin: 12px 0 6px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .full-row {
+      grid-column: 1 / -1;
+    }
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    button {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      color: #fff;
+      background: var(--blue);
+      transition: transform 0.1s ease, box-shadow 0.2s ease;
+    }
+    button:hover { box-shadow: 0 10px 24px rgba(30,115,200,0.25); }
+    button:active { transform: translateY(1px); }
+    .secondary {
+      background: #e6ecf6;
+      color: #234;
+      border: 1px solid var(--border);
+    }
+    .output {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #555;
+      word-break: break-all;
+      min-height: 16px;
+    }
+    .ai-tools {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+      padding: 10px;
+      background: #f0f3f9;
+      border: 1px dashed #c8d4ea;
+      border-radius: 8px;
+    }
+    .ai-tools label { font-size: 12px; margin-bottom: 4px; color: #333; }
+    .ai-tools input[type="file"] { padding: 6px; }
+    .dropzone {
+      border: 1px dashed #b7c4d6;
+      background: #f7f9fd;
+      color: #3a4a5e;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      user-select: none;
+    }
+    .dropzone.dragover {
+      border-color: #1e73c8;
+      background: #eef4ff;
+    }
+    .btn-small { padding: 10px; font-size: 13px; }
+    /* tabs */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin: 4px 0 12px;
+    }
+    .tab-btn {
+      flex: 1;
+      background: #eef2f8;
+      color: #234;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 14px;
+    }
+    .tab-btn.active {
+      background: var(--blue);
+      color: #fff;
+      border-color: var(--blue);
+      box-shadow: 0 10px 24px rgba(30,115,200,0.18);
+    }
+    /* preview */
+    .preview-wrap {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      background: #f0f3f9;
+      padding: 12px;
+      border-radius: 10px;
+    }
+    .page {
+      width: 100%;
+      max-width: 320px;
+      aspect-ratio: 210 / 297;
+      height: auto;
+      --fs-header: clamp(11px, 4vw, 14px);
+      --fs-info: clamp(4px, 1.8vw, 6px);
+      --fs-body: clamp(5px, 2.3vw, 7px);
+      --fs-footer: clamp(9px, 3.2vw, 11px);
+      background: #fff;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.08);
+      position: relative;
+      overflow: hidden;
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+    }
+    .page .header {
+      position: absolute;
+      top: 4.1%;
+      left: 5.7%;
+      right: 5.7%;
+      height: 6.1%;
+      background: var(--blue);
+      color: #fff;
+      font-size: var(--fs-header);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .page .info {
+      position: absolute;
+      top: 10.1%;
+      left: 5.7%;
+      right: 5.7%;
+      height: 4.1%;
+      background: var(--dark);
+      color: #fff;
+      font-size: var(--fs-info);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      line-height: 12px;
+      padding: 0 6px;
+    }
+    .page .body-box {
+      position: absolute;
+      top: 15%;
+      left: 5.7%;
+      right: 5.7%;
+      bottom: 13%;
+      background: #f5f8fd;
+      border: 1px solid #d4dce8;
+      padding: 10px;
+      overflow: hidden;
+    }
+    .page .body-text {
+      white-space: pre-wrap;
+      color: #333;
+      font-size: var(--fs-body);
+      line-height: 12px;
+    }
+    .preview-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: var(--fs-body);
+      margin-top: 6px;
+    }
+    .preview-table th,
+    .preview-table td {
+      border: 1px solid #d4dce8;
+      padding: 5px 7px;
+      vertical-align: middle;
+      text-align: center;
+      background: #fff;
+    }
+    .preview-table th {
+      width: 32%;
+      text-align: center;
+      background: #e8edf5;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .preview-table tbody td { background: #fff; }
+    .center-text { text-align: center; }
+    .preview-block { margin-bottom: 6px; white-space: pre-wrap; }
+    .note-wrap { margin-top: 10px; }
+    .note-label { font-size: 8px; color: #444; margin-bottom: 4px; }
+    .note-box {
+      border: 1px solid #d4dce8;
+      background: #f7f9fc;
+      padding: 8px;
+      min-height: 48px;
+      white-space: pre-wrap;
+      font-size: var(--fs-body);
+      color: #333;
+    }
+    .page .footer {
+      position: absolute;
+      bottom: 4.1%;
+      left: 5.7%;
+      right: 5.7%;
+      height: 6.1%;
+      background: var(--blue);
+      color: #fff;
+      font-size: var(--fs-footer);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 6px;
+    }
+    .date-row { display: flex; gap: 8px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>공고문 작성</h1>
+    <div class="tabs" role="tablist" aria-label="안내문 유형 선택">
+      <button class="tab-btn active" data-type="general">일반 안내</button>
+      <button class="tab-btn" data-type="result">사업자 선정결과 안내</button>
+    </div>
+
+    <div class="field">
+      <label for="notice_no">공고번호</label>
+      <input id="notice_no" type="text" autocomplete="off">
+    </div>
+    <div class="field">
+      <label for="apt_name">아파트 이름 </label>
+      <input id="apt_name" type="text" autocomplete="off">
+    </div>
+    <div class="field">
+      <label>게시기간</label>
+      <div class="date-row">
+        <input id="start_date" type="date" aria-label="시작일">
+        <input id="end_date" type="date" aria-label="종료일">
+      </div>
+    </div>
+    <div class="field">
+      <label for="title">제목</label>
+      <input id="title" type="text" autocomplete="off">
+    </div>
+    <div class="field" id="body-field">
+      <label for="body">본문 </label>
+      <textarea id="body" rows="6" placeholder="본문을 줄바꿈 기준으로 입력하세요."></textarea>
+      <div class="help">줄바꿈은 미리보기/PPT에 그대로 반영됩니다.</div>
+    </div>
+    <div id="result-fields" class="hidden">
+      <div class="section-label">사업자 선정결과 항목</div>
+      <div class="grid-2">
+        <div class="field">
+          <label for="f_company">상호</label>
+          <input id="f_company" type="text" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="f_ceo">대표자</label>
+          <input id="f_ceo" type="text" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="f_address">주소</label>
+          <input id="f_address" type="text" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="f_contact">연락처</label>
+          <input id="f_contact" type="text" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="f_bizno">사업자등록번호</label>
+          <input id="f_bizno" type="text" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="f_amount">계약금액</label>
+          <input id="f_amount" type="text" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="f_period">계약기간</label>
+          <input id="f_period" type="text" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="f_reason_select">계약사유</label>
+          <select id="f_reason_select">
+            <option value="">선택하세요</option>
+            <option value="수의계약">수의계약</option>
+            <option value="공개 경쟁입찰">공개 경쟁입찰</option>
+            <option value="custom">기타 (직접입력)</option>
+          </select>
+          <input id="f_reason_custom" class="hidden" type="text" autocomplete="off" placeholder="계약사유를 입력하세요">
+        </div>
+        <div class="field full-row">
+          <label for="f_result_note">사유 및 결과</label>
+          <textarea id="f_result_note" rows="3" placeholder="사유 및 결과를 입력하세요."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="secondary" id="fill-template" type="button">새로고침</button>
+      <button id="generate" type="button">PPTX 다운로드</button>
+    </div>
+    <div id="ai-tools" class="ai-tools" style="display:none;">
+      <div id="ocr-section" class="hidden">
+        <label for="ocr_file">이미지 업로드 → 사업자 선정결과</label>
+        <div id="ocr-drop" class="dropzone" tabindex="0" role="button">파일 선택 또는 여기에 드래그</div>
+        <input id="ocr_file" type="file" accept="image/*">
+        <button id="btn-ocr" class="btn-small" type="button">이미지에서 채우기</button>
+      </div>
+    </div>
+    <div class="output" id="status"></div>
+  </div>
+
+  <div class="card">
+    <h1>미리보기 </h1>
+    <div class="preview-wrap">
+      <div class="page" aria-label="미리보기">
+        <div class="header"><span id="prev-title">제목</span></div>
+        <div class="info"><span id="prev-info">공고번호: - | 게시기간: YYYY-MM-DD ~ YYYY-MM-DD</span></div>
+        <div class="body-box">
+          <div id="prev-body"></div>
+        </div>
+        <div class="footer"><span id="prev-footer"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    const templates = {
+      general: {
+        label: "일반 안내",
+        downloadName: "notice_a4.pptx",
+        defaults: {
+          notice_no: "제2025-001호",
+          apt_name: "OO공원 아파트",
+          start: "2025-12-29",
+          end: "2026-01-05",
+          title: "층간소음 안내문",
+          body: [],
+          footer: "",
+        },
+      },
+      result: {
+        label: "사업자 선정결과 안내",
+        downloadName: "결과안내문.pptx",
+        defaults: {
+          notice_no: "제2512-197호",
+          apt_name: "",
+          start: "2025-12-23",
+          end: "2025-12-30",
+          title: "사업자 선정 결과 안내",
+          body: [
+            "국토교통부 고시 [주택관리업자 및 사업자 선정지침] 제11조에 따라 사업자 선정결과를 아래와 같이 공고합니다.",
+            "- 아래 -",
+            "상호: {상호}",
+            "주소: {주소}",
+            "대표자: {대표자}",
+            "연락처: {연락처}",
+            "사업자등록번호: {사업자등록번호}",
+            "계약금액: {계약금액}",
+            "계약기간: {계약기간}",
+            "계약사유: {계약사유}",
+            "사유 및 결과: {사유및결과}",
+          ],
+          fields: {
+            company: "",
+            address: "",
+            ceo: "",
+            contact: "",
+            bizno: "",
+            amount: "",
+            period: "",
+            reason: "",
+            resultNote: "",
+          },
+          footer: "",
+        },
+      },
+    };
+
+    let currentType = "general";
+
+    const fields = {
+      notice_no: $("notice_no"),
+      apt_name: $("apt_name"),
+      start_date: $("start_date"),
+      end_date: $("end_date"),
+      title: $("title"),
+      body: $("body"),
+      status: $("status"),
+      fillTemplate: $("fill-template"),
+      tabs: Array.from(document.querySelectorAll(".tab-btn")),
+      resultBox: $("result-fields"),
+      bodyField: $("body-field"),
+      resultInputs: {
+        company: $("f_company"),
+        address: $("f_address"),
+        ceo: $("f_ceo"),
+        contact: $("f_contact"),
+        bizno: $("f_bizno"),
+        amount: $("f_amount"),
+        period: $("f_period"),
+        reasonSelect: $("f_reason_select"),
+        reasonCustom: $("f_reason_custom"),
+        resultNote: $("f_result_note"),
+      },
+      ocrFile: $("ocr_file"),
+      dropZone: $("ocr-drop"),
+      btnOcr: $("btn-ocr"),
+      ocrSection: $("ocr-section"),
+      aiTools: $("ai-tools"),
+    };
+
+    function applyTemplateDefaults(type) {
+      const tpl = templates[type].defaults;
+      fields.notice_no.value = tpl.notice_no;
+      fields.apt_name.value = tpl.apt_name;
+      fields.start_date.value = tpl.start;
+      fields.end_date.value = tpl.end;
+      fields.title.value = tpl.title;
+      fields.body.value = tpl.body.join("\\n");
+      if (type === "result" && tpl.fields) {
+        Object.entries(fields.resultInputs).forEach(([k, el]) => {
+          el.value = tpl.fields[k] || "";
+        });
+        toggleReasonInput();
+      }
+      renderPreview();
+    }
+
+    function setActiveTab(type) {
+      currentType = type;
+      fields.tabs.forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.type === type);
+      });
+      toggleSections();
+    }
+
+    function buildData() {
+      const start = fields.start_date.value || "YYYY-MM-DD";
+      const end = fields.end_date.value || "YYYY-MM-DD";
+      const bodyText = fields.body.value.trim();
+      const fallbackBody = templates[currentType].defaults.body;
+      let body = bodyText ? bodyText.split(/\r?\n/) : fallbackBody;
+
+      if (currentType === "result") {
+        const vals = fields.resultInputs;
+        const introLines = [
+          "국토교통부 고시 [주택관리업자 및 사업자 선정지침] 제11조에 따라 사업자 선정결과를 아래와 같이 공고합니다.",
+        ];
+        const centerLine = "- 아래 -";
+        const tableLines = [
+          `상호: ${vals.company.value || "{상호}"}`,
+          `주소: ${vals.address.value || "{주소}"}`,
+          `대표자: ${vals.ceo.value || "{대표자}"}`,
+          `연락처: ${vals.contact.value || "{연락처}"}`,
+          `사업자등록번호: ${vals.bizno.value || "{사업자등록번호}"}`,
+          `계약금액: ${formatAmount(vals.amount.value) || "{계약금액}"}`,
+          `계약기간: ${vals.period.value || "{계약기간}"}`,
+          `계약사유: ${getReasonValue(vals) || "{계약사유}"}`,
+        ];
+        const resultNoteLines = getResultNoteLines(vals);
+        body = [...introLines, centerLine, ...tableLines, ...resultNoteLines];
+      }
+      // 결과 템플릿은 입력값이 비어도 표 행과 안내문이 생성되므로 별도 기본 본문은 두지 않음
+
+      const aptName = fields.apt_name.value.trim();
+      const footer = aptName ? `${aptName} 관리사무소장 [직인생략]` : "";
+
+      return {
+        title: fields.title.value.trim() || "제목을 입력하세요",
+        label: "게시기간",
+        start,
+        end,
+        period: `${start} ~ ${end}`,
+        notice_no: fields.notice_no.value.trim(),
+        body,
+        footer,
+        apt_name: aptName,
+        type: currentType,
+      };
+    }
+
+    function renderPreview() {
+      const data = buildData();
+      const info = `공고번호: ${data.notice_no || "-"} | 게시기간: ${data.start} ~ ${data.end}`;
+      $("prev-title").textContent = data.title || "제목";
+      $("prev-info").textContent = info;
+      renderBodyPreview(data);
+      $("prev-footer").textContent = data.footer || "푸터";
+    }
+
+    function renderBodyPreview(data) {
+      const container = $("prev-body");
+      container.innerHTML = "";
+      container.className = "body-text";
+
+      if (currentType !== "result") {
+        container.textContent =
+          data.body && data.body.length ? data.body.join("\n") : "";
+        return;
+      }
+
+      let lines = Array.isArray(data.body) ? data.body : [];
+      if (currentType === "result" && (!lines || !lines.length)) {
+        // 안전장치: 결과 템플릿에서 비어 있을 때 기본 안내/표를 넣어 빈 박스가 되지 않도록
+        lines = templates.result.defaults.body.length
+          ? templates.result.defaults.body
+          : [
+              "국토교통부 고시 [주택관리업자 및 사업자 선정지침] 제11조에 따라 사업자 선정결과를 아래와 같이 공고합니다.",
+              "상호: {상호}",
+              "주소: {주소}",
+              "대표자: {대표자}",
+              "연락처: {연락처}",
+              "사업자등록번호: {사업자등록번호}",
+              "계약금액: {계약금액}",
+              "계약기간: {계약기간}",
+              "계약사유: {계약사유}",
+            ];
+      }
+      const tableLines = [];
+      const introLines = [];
+      const footerLines = [];
+      let centerLine = "";
+      let tableStarted = false;
+      lines.forEach((line) => {
+        if (!line.trim()) return;
+        const trimmed = line.trim();
+        if (trimmed === "- 아래 -") {
+          centerLine = trimmed;
+          tableStarted = true;
+          return;
+        }
+        if (trimmed.includes(":")) {
+          const [k, ...rest] = trimmed.split(":");
+          const key = (k || "").trim();
+          const val = rest.join(":").trim();
+          if (key === "사유 및 결과") {
+            footerLines.push(val || "(입력 없음)");
+            tableStarted = true;
+          } else {
+            tableLines.push(`${key}: ${val}`);
+            tableStarted = true;
+          }
+        } else if (!tableStarted) {
+          introLines.push(trimmed);
+        } else {
+          footerLines.push(trimmed);
+        }
+      });
+
+      if (introLines.length) {
+        const intro = document.createElement("div");
+        intro.className = "preview-block";
+        intro.textContent = introLines.join("\\n");
+        container.appendChild(intro);
+      }
+
+      if (centerLine) {
+        const center = document.createElement("div");
+        center.className = "preview-block center-text";
+        center.textContent = centerLine;
+        container.appendChild(center);
+      }
+
+      if (tableLines.length) {
+        const table = document.createElement("table");
+        table.className = "preview-table";
+        const colgroup = document.createElement("colgroup");
+        const colKey = document.createElement("col");
+        colKey.style.width = "32%";
+        const colVal = document.createElement("col");
+        colVal.style.width = "68%";
+        colgroup.appendChild(colKey);
+        colgroup.appendChild(colVal);
+        table.appendChild(colgroup);
+        const thead = document.createElement("thead");
+        const headRow = document.createElement("tr");
+        ["항목", "내용"].forEach((text) => {
+          const th = document.createElement("th");
+          th.textContent = text;
+          headRow.appendChild(th);
+        });
+        thead.appendChild(headRow);
+        table.appendChild(thead);
+
+        const tbody = document.createElement("tbody");
+        tableLines.forEach((line) => {
+          const [k, ...rest] = line.split(":");
+          const key = (k || "").trim() || "-";
+          const val = rest.join(":").trim() || "-";
+          const tr = document.createElement("tr");
+          const tdKey = document.createElement("th");
+          tdKey.textContent = key;
+          const tdVal = document.createElement("td");
+          tdVal.textContent = val;
+          tr.appendChild(tdKey);
+          tr.appendChild(tdVal);
+          tbody.appendChild(tr);
+        });
+        table.appendChild(tbody);
+        container.appendChild(table);
+      }
+
+      const noteTextRaw = fields.resultInputs?.resultNote?.value ?? "";
+      const noteText = noteTextRaw.trim()
+        ? noteTextRaw
+        : (footerLines.length ? footerLines.join("\\n") : "");
+
+      if (noteText) {
+        const wrap = document.createElement("div");
+        wrap.className = "note-wrap";
+        const label = document.createElement("div");
+        label.className = "note-label";
+        label.textContent = "사유 및 결과";
+        const box = document.createElement("div");
+        box.className = "note-box";
+        box.textContent = noteText;
+        wrap.appendChild(label);
+        wrap.appendChild(box);
+        container.appendChild(wrap);
+      }
+
+      if (!introLines.length && !tableLines.length && !footerLines.length) {
+        const empty = document.createElement("div");
+        empty.className = "preview-block";
+        empty.textContent = "(AI 본문 자리)";
+        container.appendChild(empty);
+      }
+    }
+
+    async function generatePPTX() {
+      fields.status.textContent = "PPTX 생성 중...";
+      try {
+        const endpoint = "/.netlify/functions/generate-pptx";
+        const res = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(buildData()),
+        });
+        if (!res.ok) throw new Error("서버 오류");
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = templates[currentType].downloadName;
+        a.click();
+        URL.revokeObjectURL(url);
+        fields.status.textContent = "PPTX가 다운로드되었습니다.";
+      } catch (err) {
+        fields.status.textContent =
+          "PPTX 생성/다운로드에 실패했습니다. 서버가 실행 중인지 확인해 주세요 (python notice_gen.py --serve).";
+      }
+    }
+
+    // 이벤트 바인딩
+    fields.tabs.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const type = btn.dataset.type;
+        setActiveTab(type);
+        applyTemplateDefaults(type);
+      });
+    });
+    ["notice_no", "apt_name", "start_date", "end_date", "title", "body"].forEach((id) => {
+      $(id).addEventListener("input", renderPreview);
+    });
+    ["company","address","ceo","contact","bizno","period","reasonCustom","resultNote"].forEach((k) => {
+      fields.resultInputs[k].addEventListener("input", renderPreview);
+    });
+    fields.resultInputs.amount.addEventListener("input", () => {
+      formatAmountInput(fields.resultInputs.amount);
+      renderPreview();
+    });
+    fields.resultInputs.reasonSelect.addEventListener("change", () => {
+      toggleReasonInput();
+      autoFillResultNote();
+      renderPreview();
+    });
+    $("generate").addEventListener("click", generatePPTX);
+    $("fill-template").addEventListener("click", async () => {
+      if (currentType === "general") {
+        await handleGenBody();
+      } else {
+        applyTemplateDefaults(currentType);
+      }
+    });
+    fields.btnOcr.addEventListener("click", handleOcr);
+    setupOcrDropZone();
+
+    // 초기값 설정
+    applyTemplateDefaults(currentType);
+    toggleSections();
+    toggleReasonInput();
+
+    function toggleSections() {
+      const isResult = currentType === "result";
+      fields.resultBox.classList.toggle("hidden", !isResult);
+      fields.bodyField.classList.toggle("hidden", isResult);
+      fields.aiTools.style.display = isResult ? "grid" : "none";
+      fields.ocrSection.classList.toggle("hidden", !isResult);
+      fields.fillTemplate.textContent = isResult ? "새로고침" : "안내문 자동생성";
+    }
+
+    function toggleReasonInput() {
+      const { reasonSelect, reasonCustom } = fields.resultInputs;
+      const isCustom = reasonSelect.value === "custom";
+      reasonCustom.classList.toggle("hidden", !isCustom);
+    }
+
+    function getReasonValue(vals) {
+      if (vals.reasonSelect.value === "custom") {
+        return vals.reasonCustom.value.trim();
+      }
+      return vals.reasonSelect.value || vals.reasonCustom.value.trim();
+    }
+
+    function getResultNoteLines(vals) {
+      const raw = vals.resultNote?.value?.trim();
+      if (raw) return raw.split(/\r?\n/);
+      // 계약사유가 수의계약일 때 기본 문구 자동 적용
+      if (vals.reasonSelect.value === "수의계약") {
+        return ["주택관리업자 및 사업자 선정지침 별표2에 의한 수의계약"];
+      }
+      return [];
+    }
+
+    function autoFillResultNote() {
+      const { reasonSelect, resultNote } = fields.resultInputs;
+      if (reasonSelect.value === "수의계약" && !resultNote.value.trim()) {
+        resultNote.value = "주택관리업자 및 사업자 선정지침 별표2에 의한 수의계약";
+      }
+      if (reasonSelect.value === "공개 경쟁입찰" && !resultNote.value.trim()) {
+        resultNote.value = "주택관리업자 및 사업자선정 지침 제 7조 에 의한 (               )방식에 의한 선정";
+      }
+    }
+
+    function formatAmount(raw) {
+      const digits = (raw || "").replace(/[^\d]/g, "");
+      if (!digits) return "";
+      const num = Number(digits);
+      if (Number.isNaN(num)) return raw || "";
+      return `${num.toLocaleString("ko-KR")}원`;
+    }
+
+    function formatAmountInput(el) {
+      const digits = (el.value || "").replace(/[^\d]/g, "");
+      if (!digits) {
+        el.value = "";
+        return;
+      }
+      const num = Number(digits);
+      if (Number.isNaN(num)) return;
+      el.value = `${num.toLocaleString("ko-KR")}원`;
+    }
+
+    async function callOpenAIProxy(mode, payload) {
+      fields.status.textContent = "안내문생성중...";
+      const res = await fetch("/.netlify/functions/gpt-proxy", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mode, ...payload }),
+      });
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(`GPT 호출 실패: ${res.status} ${text}`);
+      }
+      const data = await res.json();
+      if (!data.content) throw new Error("GPT 응답에 내용이 없습니다.");
+      return data.content;
+    }
+    async function handleGenBody() {
+      try {
+        const title = fields.title.value || "공지";
+        const prompt = `
+본문 구조 (⚠A4 한 장에 딱 맞게!)
+너는 공동주택 관리사무소 공지/안내문을 작성하는 전문가다. 행정문서처럼 과하게 딱딱하지 않게, 정중하고 단정한 안내문을 작성한다.
+
+중요 출력 규칙(필수)
+
+결과는 바로 게시 가능한 안내문 완성본만 출력한다.
+
+질문 금지, 설명 금지, 서론/해설 금지, 메타멘트 금지.
+
+문장 사이에 빈 줄(줄바꿈) 을 반드시 넣어, 아래 예시처럼 가독성 있게 작성한다.
+
+구성은 반드시 아래 순서/형식을 지킨다.
+
+관리사무실에서 안내드립니다. 1문단(1-2문장, 약 45-55자)
+
+최근 상황 1문단
+
+“이에 따라 아래와 같이 … 부탁드립니다.” 1문단
+
+번호 1~8까지 정확히 8개 실천사항 (각 항목은 한 문장, “~주시기 바랍니다/부탁드립니다/권장드립니다” 톤 유지)선택한 주제에 관한 구체적인 실천 방법, 약 350-450자)
+⚠️ 절대 엄수: 본문은 반드시 600자 이상 750자 이하로 작성! (A4 한 장 분량)
+⚠️ 인사말, 안내 배경, 협조 당부: 마침표(.) 뒤에는 반드시 줄바꿈 추가
+⚠️ 번호 목록(1., 2., 3. 등): 각 항목은 **마침표 1개만 사용하여 한 문장으로 작성** (줄바꿈 방지)
+⚠️ 번호 목록은 "1. ", "2. ", "3. " 형식으로 작성
+⚠️ 각 번호 항목은 40-60자 정도로 간결하게 작성
+마무리 3문단(배려 강조 → 협조 요청)(1-2문장, 약 60-80자)
+
+내용은 과장/위협 없이 “협조 요청” 중심으로 작성한다.
+
+민감한 표현(비난, 단정, 처벌 강조) 금지.
+
+[상황/요청사항] (여기만 채우기)
+
+주제: ${title}
+
+최근 발생 상황(1~2문장): 최근 ${title} 관련하여 불편을 호소하는 사례가 발생했습니다.
+
+실천사항 키워드(없으면 자동 생성):
+
+[출력 지시]
+3️⃣ 금지사항
+- 제목 작성 금지 (본문만 작성)
+- 게시기간 작성 금지
+- 발신자 정보 작성 금지
+- HTML 태그 사용 금지
+- 마크다운 문법 사용 금지 (**굵게** 등)
+- 불필요한 구분선(---, ===) 사용 금지
+- 본문만 순수 텍스트로 작성
+- ⚠️ 중요: 선택한 안내문 유형과 무관한 내용 절대 금지!
+위 입력을 바탕으로, 아래 예시와 동일한 톤/구성/줄바꿈/번호 형식으로 안내문을 작성하라.
+단, 괄호/템플릿 표시는 모두 제거하고 자연스러운 완성문으로 출력하라.
+`;
+        const content = await callOpenAIProxy("genBody", { prompt });
+        fields.body.value = content.trim();
+        renderPreview();
+        fields.status.textContent = "본문을 생성했습니다.";
+      } catch (err) {
+        fields.status.textContent = `본문 생성 실패: ${err.message}`;
+      }
+    }
+
+    async function handleOcr() {
+      try {
+        const file = fields.ocrFile.files?.[0];
+        if (!file) {
+          fields.status.textContent = "이미지 파일을 선택하세요.";
+          return;
+        }
+        const base64 = await toBase64(file);
+        const prompt = `OCR 작업 지시
+- 이미지에 있는 표에서 1번 행(순번 1)의 데이터만 추출한다.
+- 추출 대상: 업체명, 사업자등록번호, 대표자, 전화번호, 응찰금액.
+- 반환 형식은 아래 JSON 한 개만 출력한다. 다른 설명/문장은 금지.
+- 코드블록(백틱 3개) 사용 금지.
+- 값이 없거나 확실하지 않으면 빈 문자열로 둔다.
+
+출력 JSON 형식(키 고정)
+{
+  "company": "",
+  "bizno": "",
+  "ceo": "",
+  "contact": "",
+  "amount": ""
+}`;
+        const content = await callOpenAIProxy("ocr", { base64, prompt });
+        const fenced = content.match(/```json\s*([\s\S]*?)```/i);
+        const brace = content.match(/\{[\s\S]*\}/);
+        const jsonText = fenced ? fenced[1] : (brace ? brace[0] : null);
+        if (!jsonText) throw new Error("JSON 응답을 찾지 못했습니다.");
+        const parsed = JSON.parse(jsonText);
+        fillResultFromOcr(parsed);
+        renderPreview();
+        fields.status.textContent = "이미지에서 필드를 채웠습니다.";
+      } catch (err) {
+        fields.status.textContent = `OCR 실패: ${err.message}`;
+      }
+    }
+
+    
+    function setupOcrDropZone() {
+      if (!fields.dropZone || !fields.ocrFile) return;
+      const zone = fields.dropZone;
+
+      const setFile = (file) => {
+        if (!file) return;
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        fields.ocrFile.files = dt.files;
+        zone.textContent = file.name;
+      };
+
+      zone.addEventListener("click", () => fields.ocrFile.click());
+      zone.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          fields.ocrFile.click();
+        }
+      });
+      zone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        zone.classList.add("dragover");
+      });
+      zone.addEventListener("dragleave", () => zone.classList.remove("dragover"));
+      zone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        zone.classList.remove("dragover");
+        const file = e.dataTransfer?.files?.[0];
+        setFile(file);
+      });
+      fields.ocrFile.addEventListener("change", () => {
+        const file = fields.ocrFile.files?.[0];
+        zone.textContent = file ? file.name : "파일 선택 또는 여기에 드래그";
+      });
+    }
+function fillResultFromOcr(data) {
+      const r = fields.resultInputs;
+      if ("company" in data) r.company.value = data.company || "";
+      if ("address" in data) r.address.value = data.address || "";
+      if ("ceo" in data) r.ceo.value = data.ceo || "";
+      if ("contact" in data) r.contact.value = data.contact || "";
+      if ("bizno" in data) r.bizno.value = data.bizno || "";
+      if ("amount" in data) {
+        r.amount.value = data.amount || "";
+        if (data.amount) formatAmountInput(r.amount);
+      }
+      if ("period" in data) r.period.value = data.period || "";
+      if ("reason" in data) {
+        r.reasonSelect.value = data.reason === "수의계약" ? "수의계약" : data.reason || "";
+      }
+      if (!["수의계약", "공개 경쟁입찰", "custom", ""].includes(r.reasonSelect.value)) {
+        r.reasonSelect.value = "custom";
+        r.reasonCustom.value = data.reason || "";
+      }
+      if ("resultNote" in data) {
+        r.resultNote.value = data.resultNote || "";
+      }
+      toggleReasonInput();
+    }
+
+    function toBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
