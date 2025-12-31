@@ -758,6 +758,17 @@
     toggleSections();
     toggleReasonInput();
 
+    // URL 파라미터로 아파트명 전달받기 (실서버용 보조 경로)
+    const urlParams = new URLSearchParams(window.location.search);
+    const aptNameFromUrl = urlParams.get("apt_name");
+    if (aptNameFromUrl) {
+      const aptInput = document.getElementById("apt_name");
+      if (aptInput) {
+        aptInput.value = aptNameFromUrl;
+        renderPreview();
+      }
+    }
+
     // 주비 앱으로부터 아파트명 수신
     window.addEventListener("message", (event) => {
       const allowedOriginSuffixes = [".supabase.co", ".figma.site"];
