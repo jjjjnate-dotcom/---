@@ -758,6 +758,18 @@
     toggleSections();
     toggleReasonInput();
 
+    // 주비 앱으로부터 아파트명 수신
+    window.addEventListener("message", (event) => {
+      if (typeof event.origin !== "string" || !event.origin.endsWith(".supabase.co")) return;
+      const data = event.data;
+      if (!data || data.type !== "SET_APT_NAME" || !data.aptName) return;
+      const aptInput = document.getElementById("apt_name");
+      if (aptInput) {
+        aptInput.value = data.aptName;
+        renderPreview();
+      }
+    });
+
     function toggleSections() {
       const isResult = currentType === "result";
       fields.resultBox.classList.toggle("hidden", !isResult);
