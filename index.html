@@ -426,11 +426,11 @@
         label: "일반 안내",
         downloadName: "notice_a4.pptx",
         defaults: {
-          notice_no: "제2025-001호",
+          notice_no: "제2026-001호",
           apt_name: "OO공원 아파트",
           start: "2025-12-29",
           end: "2026-01-05",
-          title: "층간소음 안내문",
+          title: "제목을 입력하세요",
           notice_type: "직접 작성",
           body: [],
           footer: "",
@@ -440,14 +440,14 @@
         label: "사업자 선정결과 안내",
         downloadName: "결과안내문.pptx",
         defaults: {
-          notice_no: "제2512-197호",
+          notice_no: "제2026-001호",
           apt_name: "",
           start: "2025-12-23",
           end: "2025-12-30",
           title: "사업자 선정 결과 안내",
           body: [
             "국토교통부 고시 [주택관리업자 및 사업자 선정지침] 제11조에 따라 사업자 선정결과를 아래와 같이 공고합니다.",
-            "- 아래 -",
+            "- 아  래 -",
             "상호: {상호}",
             "주소: {주소}",
             "대표자: {대표자}",
@@ -587,7 +587,7 @@
       $("prev-title").textContent = data.title || "제목";
       $("prev-info").textContent = info;
       renderBodyPreview(data);
-      $("prev-footer").textContent = data.footer || "푸터";
+      $("prev-footer").textContent = data.footer || "000아파트 관리사무소장 [직인생략]";
     }
 
     function renderBodyPreview(data) {
@@ -792,26 +792,9 @@
     toggleSections();
     toggleReasonInput();
 
-    // URL 파라미터로 아파트명 전달받기 (실서버용 보조 경로)
-    const urlParams = new URLSearchParams(window.location.search);
-    const aptNameFromUrl = urlParams.get("apt_name");
-    if (aptNameFromUrl) {
-      const aptInput = document.getElementById("apt_name");
-      if (aptInput) {
-        aptInput.value = aptNameFromUrl;
-        renderPreview();
-      }
-    }
-
     // 주비 앱으로부터 아파트명 수신
     window.addEventListener("message", (event) => {
-      const allowedOriginSuffixes = [".supabase.co", ".figma.site"];
-      if (
-        typeof event.origin !== "string" ||
-        !allowedOriginSuffixes.some((suffix) => event.origin.endsWith(suffix))
-      ) {
-        return;
-      }
+      if (typeof event.origin !== "string" || !event.origin.endsWith(".supabase.co")) return;
       const data = event.data;
       if (!data || data.type !== "SET_APT_NAME" || !data.aptName) return;
       const aptInput = document.getElementById("apt_name");
@@ -861,7 +844,7 @@
         resultNote.value = "주택관리업자 및 사업자 선정지침 별표2에 의한 수의계약";
       }
       if (reasonSelect.value === "공개 경쟁입찰" && !resultNote.value.trim()) {
-        resultNote.value = "주택관리업자 및 사업자선정 지침 제 7조 에 의한 (               )방식에 의한 선정";
+        resultNote.value = "주택관리업자 및 사업자선정 지침 제 7조 에 의한 (          )방식에 의한 선정";
       }
     }
 
@@ -1101,29 +1084,6 @@ function fillResultFromOcr(data) {
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
