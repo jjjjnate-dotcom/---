@@ -219,6 +219,10 @@
       padding: 10px;
       overflow: hidden;
     }
+    .page.result-preview .body-box {
+      top: 15.5%;
+      bottom: 8.8%;
+    }
     .page .body-text {
       white-space: pre-wrap;
       color: #333;
@@ -399,7 +403,7 @@
   <div class="card">
     <h1>미리보기 </h1>
     <div class="preview-wrap">
-      <div class="page" aria-label="미리보기">
+      <div class="page" id="preview-page" aria-label="미리보기">
         <div class="header"><span id="prev-title">제목</span></div>
         <div class="info"><span id="prev-info">공고번호: - | 게시기간: YYYY-MM-DD ~ YYYY-MM-DD</span></div>
         <div class="body-box">
@@ -482,6 +486,7 @@
       resultBox: $("result-fields"),
       noticeTypeField: $("notice-type-field"),
       bodyField: $("body-field"),
+      previewPage: $("preview-page"),
       resultInputs: {
         company: $("f_company"),
         address: $("f_address"),
@@ -817,6 +822,7 @@
       fields.resultBox.classList.toggle("hidden", !isResult);
       fields.noticeTypeField.classList.toggle("hidden", isResult);
       fields.bodyField.classList.toggle("hidden", isResult);
+      fields.previewPage.classList.toggle("result-preview", isResult);
       fields.aiTools.style.display = isResult ? "grid" : "none";
       fields.ocrSection.classList.toggle("hidden", !isResult);
       fields.fillTemplate.textContent = isResult ? "새로고침" : "안내문 자동생성";
