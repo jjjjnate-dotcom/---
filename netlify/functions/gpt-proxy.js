@@ -51,7 +51,7 @@
     }
 
     const requestBody = {
-      model: "gpt-4o-mini",
+      model: "gpt-4o",
       messages,
       max_tokens: 800,
       temperature: 0.2,

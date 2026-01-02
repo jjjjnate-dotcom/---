@@ -307,6 +307,22 @@
       <label for="title">제목</label>
       <input id="title" type="text" autocomplete="off">
     </div>
+    <div class="field" id="notice-type-field">
+      <label for="notice_type">유형</label>
+      <select id="notice_type">
+        <option value="층간소음 자제">층간소음 자제</option>
+        <option value="주차 관련">주차 관련</option>
+        <option value="쓰레기 분리수거">쓰레기 분리수거</option>
+        <option value="엘리베이터 이용">엘리베이터 이용</option>
+        <option value="시설 공사">시설 공사</option>
+        <option value="안전 관련">안전 관련</option>
+        <option value="실내소독">실내소독</option>
+        <option value="관리비 고지">관리비 고지</option>
+        <option value="수도/전기">수도/전기</option>
+        <option value="반려동물">반려동물</option>
+        <option value="직접 작성" selected>직접 작성</option>
+      </select>
+    </div>
     <div class="field" id="body-field">
       <label for="body">본문 </label>
       <textarea id="body" rows="6" placeholder="본문을 줄바꿈 기준으로 입력하세요."></textarea>
@@ -402,6 +418,7 @@
           start: "2025-12-29",
           end: "2026-01-05",
           title: "층간소음 안내문",
+          notice_type: "직접 작성",
           body: [],
           footer: "",
         },
@@ -452,11 +469,13 @@
       start_date: $("start_date"),
       end_date: $("end_date"),
       title: $("title"),
+      notice_type: $("notice_type"),
       body: $("body"),
       status: $("status"),
       fillTemplate: $("fill-template"),
       tabs: Array.from(document.querySelectorAll(".tab-btn")),
       resultBox: $("result-fields"),
+      noticeTypeField: $("notice-type-field"),
       bodyField: $("body-field"),
       resultInputs: {
         company: $("f_company"),
@@ -484,6 +503,7 @@
       fields.start_date.value = tpl.start;
       fields.end_date.value = tpl.end;
       fields.title.value = tpl.title;
+      fields.notice_type.value = tpl.notice_type || "직접 작성";
       fields.body.value = tpl.body.join("\\n");
       if (type === "result" && tpl.fields) {
         Object.entries(fields.resultInputs).forEach(([k, el]) => {
@@ -790,6 +810,7 @@
     function toggleSections() {
       const isResult = currentType === "result";
       fields.resultBox.classList.toggle("hidden", !isResult);
+      fields.noticeTypeField.classList.toggle("hidden", isResult);
       fields.bodyField.classList.toggle("hidden", isResult);
       fields.aiTools.style.display = isResult ? "grid" : "none";
       fields.ocrSection.classList.toggle("hidden", !isResult);
@@ -898,7 +919,7 @@
 
 민감한 표현(비난, 단정, 처벌 강조) 금지.
 
-[유형별 가이드] (11가지 안내문 유형별 세부 지침)
+[유형별 가이드] (11가지 안내문 유형별 세부 지침, 선택된 유형만 적용)
 - 층간소음 자제: 생활소음으로 인한 배려 요청, 조용한 시간대와 실천 방법 강조.
 - 주차 관련: 지정구역 준수, 이중주차/소방통로 방지, 통행 안전 강조.
 - 쓰레기 분리수거: 배출시간, 분리배출 기준, 위생/청결 중심 안내.
@@ -911,11 +932,13 @@
 - 반려동물: 목줄 착용, 배변 처리, 소음/엘리베이터 배려 요청.
 - 직접 작성: 제목에 맞는 중립적 배경과 협조 요청 중심으로 구성.
 
-유형 판별 규칙: 제목/내용에서 가장 가까운 유형을 선택해 그 지침을 따른다. 불명확하면 "직접 작성"을 적용한다.
+유형 선택 규칙: 드롭다운에서 선택한 유형을 그대로 따른다. "직접 작성"이면 제목 중심으로 중립적 안내를 작성한다.
 
 [상황/요청사항] (여기만 채우기)
 
 주제: ${title}
+
+선택 유형: ${fields.notice_type.value || "직접 작성"}
 
 안내 배경/근거(1~2문장): 선택한 유형의 가이드에 맞춰 법적 근거/목적/시행 안내를 자연스럽게 작성한다.
 
