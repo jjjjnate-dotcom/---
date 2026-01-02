@@ -303,10 +303,6 @@
         <input id="end_date" type="date" aria-label="종료일">
       </div>
     </div>
-    <div class="field">
-      <label for="title">제목</label>
-      <input id="title" type="text" autocomplete="off">
-    </div>
     <div class="field" id="notice-type-field">
       <label for="notice_type">유형</label>
       <select id="notice_type">
@@ -327,6 +323,10 @@
         <option value="수목소독">수목소독</option>
         <option value="직접 작성" selected>직접 작성</option>
       </select>
+    </div>
+    <div class="field">
+      <label for="title">제목</label>
+      <input id="title" type="text" autocomplete="off">
     </div>
     <div class="field" id="body-field">
       <label for="body">본문 </label>
@@ -906,11 +906,13 @@
 
 구성은 반드시 아래 순서/형식을 지킨다.
 
-관리사무실에서 안내드립니다. 1문단(1-2문장, 약 45-55자)
+관리사무실에서 안내드립니다. 다음 문장은 빈 줄 없이 바로 줄바꿈.
 
 안내 배경/근거 1문단
 
 “이에 따라 아래와 같이 … 부탁드립니다.” 1문단
+
+다음 줄에 "-  아   래  -" 를 단독 한 줄로 출력하고, 좌우에 다른 문자 없이 가운데 정렬처럼 보이도록 공백을 유지한다.
 
 번호 1~7까지 정확히 7개 실천사항 (각 항목은 한 문장, “~주시기 바랍니다/부탁드립니다/권장드립니다” 톤 유지)선택한 주제에 관한 구체적인 실천 방법, 약 350-450자)
 ⚠️ 절대 엄수: 본문은 반드시 600자 이상 750자 이하로 작성! (A4 한 장 분량)
