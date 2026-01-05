@@ -143,6 +143,25 @@ exports.handler = async (event) => {
           "사유 및 결과: {사유및결과}",
         ];
 
+    const isCenterLine = (line) => line.replace(/\s/g, "") === "-아래-";
+    const normalizeBodyLines = (lines) => {
+      const greetingLines = new Set([
+        "관리사무실에서 안내드립니다.",
+        "관리실에서 안내드립니다.",
+      ]);
+      const cleaned = [];
+      lines.forEach((line) => {
+        const value = (line ?? "").toString();
+        const prev = cleaned.length ? cleaned[cleaned.length - 1] : "";
+        if (!value.trim() && greetingLines.has(prev.trim())) {
+          return;
+        }
+        cleaned.push(value);
+      });
+      return cleaned;
+    };
+    const bodyLines = normalizeBodyLines(safeBodyLines);
+
     const baseFontSize = type === "general" ? 15 : 13;
     const lineSpace = Math.round(baseFontSize * 1.45);
 
@@ -158,10 +177,10 @@ exports.handler = async (event) => {
     let centerLine = "";
     let tableStarted = false;
 
-    safeBodyLines.forEach((line) => {
+    bodyLines.forEach((line) => {
       if (!line.trim()) return;
       const trimmed = line.trim();
-      if (trimmed === "- 아래 -") {
+      if (isCenterLine(trimmed)) {
         centerLine = trimmed;
         tableStarted = true;
         return;
@@ -313,22 +332,92 @@ exports.handler = async (event) => {
         }
       }
     } else {
-      const bodyText = bodyLinesRaw.join("\n") || "(AI 본문 자리)";
-      slide.addText(bodyText, {
-        x: bodyX,
-        y: bodyY,
-        w: bodyW,
-        h: bodyInnerH,
-        fontSize: baseFontSize,
-        fontFace: FONT_KR,
-        color: TEXT,
-        align: "left",
-        valign: "top",
-        lineSpacing: lineSpace,
-        paraSpaceAfter: 3,
-        autoFit: true,
-        wrap: true,
-      });
+      const centerIdx = bodyLines.findIndex(isCenterLine);
+      if (centerIdx === -1) {
+        const bodyText = bodyLines.join("\n") || "(AI 본문 자리)";
+        slide.addText(bodyText, {
+          x: bodyX,
+          y: bodyY,
+          w: bodyW,
+          h: bodyInnerH,
+          fontSize: baseFontSize,
+          fontFace: FONT_KR,
+          color: TEXT,
+          align: "left",
+          valign: "top",
+          lineSpacing: lineSpace,
+          paraSpaceAfter: 3,
+          autoFit: true,
+          wrap: true,
+        });
+      } else {
+        const beforeLines = bodyLines.slice(0, centerIdx);
+        const centerLine = bodyLines[centerIdx];
+        const afterLines = bodyLines.slice(centerIdx + 1);
+        const gapY = mm(2);
+        const centerH = mm(8);
+        const totalLines = Math.max(1, beforeLines.length + afterLines.length + 1);
+        const remainingH = Math.max(bodyInnerH - centerH - gapY * 2, 0);
+        const beforeShare = beforeLines.length / totalLines;
+        let beforeH = beforeLines.length ? remainingH * beforeShare : 0;
+        let afterH = afterLines.length ? remainingH - beforeH : 0;
+        if (beforeLines.length && beforeH < mm(10)) {
+          beforeH = Math.min(mm(10), remainingH);
+          afterH = Math.max(remainingH - beforeH, 0);
+        }
+
+        let cursorY = bodyY;
+        if (beforeLines.length) {
+          slide.addText(beforeLines.join("\n"), {
+            x: bodyX,
+            y: cursorY,
+            w: bodyW,
+            h: beforeH,
+            fontSize: baseFontSize,
+            fontFace: FONT_KR,
+            color: TEXT,
+            align: "left",
+            valign: "top",
+            lineSpacing: lineSpace,
+            paraSpaceAfter: 3,
+            autoFit: true,
+            wrap: true,
+          });
+          cursorY += beforeH + gapY;
+        }
+
+        slide.addText(centerLine, {
+          x: bodyX,
+          y: cursorY,
+          w: bodyW,
+          h: centerH,
+          fontSize: baseFontSize,
+          fontFace: FONT_KR,
+          color: TEXT,
+          align: "center",
+          valign: "middle",
+        });
+        cursorY += centerH + gapY;
+
+        if (afterLines.length) {
+          const afterHeight = Math.max(afterH, bodyInnerH - (cursorY - bodyY));
+          slide.addText(afterLines.join("\n"), {
+            x: bodyX,
+            y: cursorY,
+            w: bodyW,
+            h: afterHeight,
+            fontSize: baseFontSize,
+            fontFace: FONT_KR,
+            color: TEXT,
+            align: "left",
+            valign: "top",
+            lineSpacing: lineSpace,
+            paraSpaceAfter: 3,
+            autoFit: true,
+            wrap: true,
+          });
+        }
+      }
     }
 
     // footer

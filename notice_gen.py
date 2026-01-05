@@ -86,8 +86,23 @@ def normalize_body(body):
     if body is None:
         return []
     if isinstance(body, str):
-        return [line.rstrip() for line in body.splitlines()] or [body]
-    return [str(line) for line in body]
+        lines = [line.rstrip() for line in body.splitlines()] or [body]
+    else:
+        lines = [str(line) for line in body]
+    greeting_lines = {
+        "관리사무실에서 안내드립니다.",
+        "관리실에서 안내드립니다.",
+    }
+    cleaned = []
+    for line in lines:
+        if not line.strip() and cleaned and cleaned[-1].strip() in greeting_lines:
+            continue
+        cleaned.append(line)
+    return cleaned
+
+
+def is_center_line(line):
+    return "".join(line.split()) == "-아래-"
 
 
 def load_body_from_text(path):
@@ -144,6 +159,8 @@ def make_notice(data, filename="notice_a4.pptx"):
         p.font.size = Pt(14)
         p.font.name = FONT_NAME
         p.font.color.rgb = TEXT
+        if is_center_line(line):
+            p.alignment = PP_ALIGN.CENTER
         p.space_before = Pt(0)
         p.space_after = Pt(0)
         p.line_spacing = 1.0
