@@ -14,6 +14,7 @@ import argparse
 import json
 from pathlib import Path
 import os
+import re
 import tkinter as tk
 from tkinter import filedialog, messagebox
 from io import BytesIO
@@ -98,11 +99,29 @@ def normalize_body(body):
         if not line.strip() and cleaned and cleaned[-1].strip() in greeting_lines:
             continue
         cleaned.append(line)
-    return cleaned
+
+    expanded = []
+    for line in cleaned:
+        if is_center_line(line):
+            expanded.append(line)
+            continue
+        with_breaks = apply_sentence_breaks(line)
+        expanded.extend(with_breaks.splitlines() if with_breaks else [""])
+    return expanded
 
 
 def is_center_line(line):
     return "".join(line.split()) == "-아래-"
+
+
+def apply_sentence_breaks(line):
+    if not line:
+        return line
+    if re.match(r"^\s*\d+\.\s", line):
+        return line
+    line = re.sub(r"([.!?])\s+(?=\S)", r"\1\n", line)
+    line = re.sub(r"([.!?])(?=\S)", r"\1\n", line)
+    return line
 
 
 def load_body_from_text(path):

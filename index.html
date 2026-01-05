@@ -594,6 +594,32 @@
       return line.replace(/\s/g, "") === "-아래-";
     }
 
+    function applySentenceBreaks(line) {
+      if (!line) return line;
+      if (/^\s*\d+\.\s/.test(line)) return line;
+      return line
+        .replace(/([.!?])\s+(?=\S)/g, "$1\n")
+        .replace(/([.!?])(?=\S)/g, "$1\n");
+    }
+
+    function expandLines(lines, opts = {}) {
+      const preserveTable = Boolean(opts.preserveTable);
+      const expanded = [];
+      lines.forEach((line) => {
+        if (isCenterLine(line)) {
+          expanded.push(line);
+          return;
+        }
+        if (preserveTable && line.includes(":")) {
+          expanded.push(line);
+          return;
+        }
+        const withBreaks = applySentenceBreaks(line);
+        withBreaks.split(/\n/).forEach((part) => expanded.push(part));
+      });
+      return expanded;
+    }
+
     function normalizeBodyLines(lines) {
       const greetingLines = new Set([
         "관리사무실에서 안내드립니다.",
@@ -617,10 +643,12 @@
       container.className = "body-text";
 
       if (currentType !== "result") {
-        const lines = normalizeBodyLines(
+        const lines = expandLines(
+          normalizeBodyLines(
           Array.isArray(data.body)
             ? data.body
             : (data.body || "").split(/\r?\n/)
+          )
         );
         if (!lines.length) {
           return;
@@ -650,6 +678,7 @@
       }
 
       let lines = Array.isArray(data.body) ? data.body : [];
+      lines = expandLines(normalizeBodyLines(lines), { preserveTable: true });
       if (currentType === "result" && (!lines || !lines.length)) {
         // 안전장치: 결과 템플릿에서 비어 있을 때 기본 안내/표를 넣어 빈 박스가 되지 않도록
         lines = templates.result.defaults.body.length

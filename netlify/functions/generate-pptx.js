@@ -160,7 +160,30 @@ exports.handler = async (event) => {
       });
       return cleaned;
     };
-    const bodyLines = normalizeBodyLines(safeBodyLines);
+    const applySentenceBreaks = (line) => {
+      if (!line) return line;
+      if (/^\s*\d+\.\s/.test(line)) return line;
+      return line
+        .replace(/([.!?])\s+(?=\S)/g, "$1\n")
+        .replace(/([.!?])(?=\S)/g, "$1\n");
+    };
+    const expandLines = (lines, preserveTable) => {
+      const expanded = [];
+      lines.forEach((line) => {
+        if (isCenterLine(line)) {
+          expanded.push(line);
+          return;
+        }
+        if (preserveTable && line.includes(":")) {
+          expanded.push(line);
+          return;
+        }
+        const withBreaks = applySentenceBreaks(line);
+        withBreaks.split(/\n/).forEach((part) => expanded.push(part));
+      });
+      return expanded;
+    };
+    const bodyLines = expandLines(normalizeBodyLines(safeBodyLines), type === "result");
 
     const baseFontSize = type === "general" ? 15 : 13;
     const lineSpace = Math.round(baseFontSize * 1.45);
